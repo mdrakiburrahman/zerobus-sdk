@@ -24,8 +24,7 @@
 
    ```bash
    echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/$USER >/dev/null && sudo chmod 440 /etc/sudoers.d/$USER
-   sudo mkdir -p /workspaces
-   cd /workspaces
+   cd ~/
 
    read -p "Enter your name (e.g. 'FirstName LastName'): " user_name
    read -p "Enter your GitHub email (e.g. 'your-email@blah.com'): " user_email
@@ -35,7 +34,7 @@
 
    git config --global user.name "$user_name"
    git config --global user.email "$user_email"
-   cd /workspaces/zerobus-sdk/
+   cd zerobus-sdk/
    git pull origin
    git checkout -b "$branch_name"
    code .
@@ -46,12 +45,4 @@
    ```bash
    GIT_ROOT=$(git rev-parse --show-toplevel)
    chmod +x ${GIT_ROOT}/contrib/bootstrap-dev-env.sh && ${GIT_ROOT}/contrib/bootstrap-dev-env.sh
-   ```
-
-1. Launch devcontainer:
-
-   ```bash
-   cd /workspaces/zerobus-sdk
-   HEX=$(printf '%s' "$(wslpath -w .)" | xxd -ps -c 256)
-   code --folder-uri "vscode-remote://dev-container+${HEX}/workspaces/zerobus-sdk"
    ```
