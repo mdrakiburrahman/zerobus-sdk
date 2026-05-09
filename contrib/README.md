@@ -23,6 +23,7 @@
     > You can technically run the Devcontainer using Windows Docker Desktop, but the I/O experience is slow and poor.
 
    ```bash
+   mkdir -p /workspaces
    cd /workspaces
 
    read -p "Enter your name (e.g. 'FirstName LastName'): " user_name
