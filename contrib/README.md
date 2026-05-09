@@ -40,6 +40,13 @@
    code .
    ```
 
+1. Install recommended developer tooling (optional):
+
+  ```bash
+  curl -fsSL https://gh.io/copilot-install | bash
+  $HOME/.local/bin/copilot --yolo
+  ```
+
 1. Run the bootstrapper script, that installs all tools idempotently:
 
    ```bash
