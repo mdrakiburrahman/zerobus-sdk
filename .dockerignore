@@ -1,0 +1,63 @@
+# Output dir — never ship into build context
+mount/
+
+# VCS
+.git/
+.gitignore
+.gitattributes
+
+# Scratch / agent state
+.temp/
+.copilot/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.iml
+.bsp/
+.metals/
+
+# Cargo build artifacts
+**/target/
+
+# Python build artifacts
+**/.venv/
+**/dist/
+**/build/
+**/*.egg-info/
+**/.pytest_cache/
+**/.mypy_cache/
+**/htmlcov/
+**/.coverage
+**/__pycache__/
+**/*.pyc
+
+# Node build artifacts
+**/node_modules/
+typescript/*.node
+typescript/index.js
+typescript/index.d.ts
+typescript/examples/generated/
+
+# Java build artifacts
+**/.m2/
+java/target/
+java/src/main/resources/native/
+
+# Go pre-built FFI libs (rebuilt fresh in container)
+go/lib/
+
+# Docker / scripts (not consumed inside any container)
+docker/
+.scripts/
+
+# CI configs
+.github/
+
+# Credentials (must never enter the image)
+.env
+.env.example

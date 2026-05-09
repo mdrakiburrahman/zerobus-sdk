@@ -21,3 +21,12 @@ Thumbs.db
 
 # Databricks
 .databricks
+
+# Scratch
+.temp
+
+# Docker
+mount/*
+
+# Credentials
+.env

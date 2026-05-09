@@ -1,0 +1,81 @@
+# Build all 5 Zerobus SDKs in Docker, dropping artifacts into ../mount/<sdk>/.
+# Driven by .scripts/run.sh — see .scripts/README.md.
+#
+# Image build is deterministic and creds-free: it does lint + build +
+# package + stage artifacts. No tests run during `docker build`.
+#
+# Tests run inside the entrypoint at container runtime when RUN_TESTS=1.
+# This is critical for Java + TypeScript integration tests, which read
+# Databricks creds from process env — those creds only flow through
+# `environment:` (runtime), not via build-time ARGs.
+
+x-rt-env: &rt-env
+  RUN_TESTS: "${RUN_TESTS:-0}"
+  HOST_UID: "${HOST_UID:-1000}"
+  HOST_GID: "${HOST_GID:-1000}"
+
+x-rt-env-with-creds: &rt-env-with-creds
+  RUN_TESTS: "${RUN_TESTS:-0}"
+  HOST_UID: "${HOST_UID:-1000}"
+  HOST_GID: "${HOST_GID:-1000}"
+  ZEROBUS_SERVER_ENDPOINT: "${ZEROBUS_SERVER_ENDPOINT:-}"
+  DATABRICKS_WORKSPACE_URL: "${DATABRICKS_WORKSPACE_URL:-}"
+  DATABRICKS_CLIENT_ID:    "${DATABRICKS_CLIENT_ID:-}"
+  DATABRICKS_CLIENT_SECRET: "${DATABRICKS_CLIENT_SECRET:-}"
+  ZEROBUS_TABLE_NAME:      "${ZEROBUS_TABLE_NAME:-}"
+
+# Stable named, externally-managed network so parallel `docker compose run`
+# invocations don't race each other creating an auto-named one. run.sh
+# creates it once before fanning out, and we mark it external so Compose
+# doesn't try to manage labels on it.
+networks:
+  default:
+    name: zerobus-sdk-build
+    external: true
+
+services:
+  build-rust:
+    build:
+      context: ..
+      dockerfile: docker/rust/Dockerfile
+    image: zerobus-sdk-build-rust:latest
+    environment: *rt-env
+    volumes:
+      - ../mount/rust:/output
+
+  build-python:
+    build:
+      context: ..
+      dockerfile: docker/python/Dockerfile
+    image: zerobus-sdk-build-python:latest
+    environment: *rt-env
+    volumes:
+      - ../mount/python:/output
+
+  build-typescript:
+    build:
+      context: ..
+      dockerfile: docker/typescript/Dockerfile
+    image: zerobus-sdk-build-typescript:latest
+    environment: *rt-env-with-creds
+    volumes:
+      - ../mount/typescript:/output
+
+  build-java:
+    build:
+      context: ..
+      dockerfile: docker/java/Dockerfile
+    image: zerobus-sdk-build-java:latest
+    environment: *rt-env-with-creds
+    volumes:
+      - ../mount/java:/output
+
+  build-go:
+    build:
+      context: ..
+      dockerfile: docker/go/Dockerfile
+    image: zerobus-sdk-build-go:latest
+    environment: *rt-env
+    volumes:
+      - ../mount/go:/output
+
